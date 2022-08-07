@@ -67,6 +67,16 @@ public class TrainingController {
     private ListView<String> previousSession;
 
     @FXML
+    private ListView<String> privateListView;
+
+    @FXML
+    private ListView<String> groupListView;
+
+    @FXML
+    private Button upcomingRefresh;
+
+
+    @FXML
     void trainingButton(ActionEvent event) throws IOException {
         System.out.println("Training button was clicked");
         root = FXMLLoader.load(getClass().getResource("Training.fxml"));
@@ -140,7 +150,17 @@ public class TrainingController {
         String lastpaymentField = lastpaymentTextfield.getText();
         String creditsPField = creditsPTextfield.getText();
         String creditsGField = creditsGTextfield.getText();
-        System.out.println(nameField + " " + siblingField + " " + parentField + " " + packageField + " " + lastpaymentField + " " + creditsPField + " " + creditsGField);
+        for(int i = 0; i < Storage.studentData.size(); i++){
+            if(Storage.studentData.get(i)[0].equals(StudentsTableView.getSelectionModel().getSelectedItem())){
+                Storage.studentData.get(i)[0] = nameField;
+                Storage.studentData.get(i)[1] = siblingField;
+                Storage.studentData.get(i)[2] = parentField;
+                Storage.studentData.get(i)[3] = packageField;
+                Storage.studentData.get(i)[4] = lastpaymentField;
+                Storage.studentData.get(i)[5] = creditsPField;
+                Storage.studentData.get(i)[6] = creditsGField;
+            }
+        }
     }
 
     @FXML public void handleMouseClick(MouseEvent arg0) {
@@ -156,7 +176,9 @@ public class TrainingController {
                 creditsGTextfield.setText(Storage.studentData.get(i)[6]);
             }
         }
+        previousSession.getItems().clear();
         pastSessions();
+        addStudentToupcomingList();
     }
 
     @FXML
@@ -170,6 +192,7 @@ public class TrainingController {
         System.out.println("Added new student to array" + nameTextfield.getText() + " " + siblingTextfield.getText() + " " + parentTextfield.getText() + " " + packageTextfield.getText() + " " + lastpaymentTextfield.getText() + " " + creditsPTextfield.getText() + " " + creditsGTextfield.getText());
         addStudentToArray();
     }
+
 
     void addStudentToList(){
         StudentsTableView.getItems().clear();
@@ -192,13 +215,55 @@ public class TrainingController {
     void pastSessions(){
         for(int i = 0; i < Storage.studentData.size(); i++){
             if(Storage.studentData.get(i)[0].equals(StudentsTableView.getSelectionModel().getSelectedItem())){
+                try{
                 String[] PS = Storage.studentData.get(i)[7].split("NS");
+                previousSession.getItems().clear();
                 for(int j = 0; j < PS.length; j++){
                     if(PS[j]!=""){
                         previousSession.getItems().add(PS[j]);
                     } else{
                         previousSession.getItems().add("No previous sessions");
                     }
+                }
+            } catch (ArrayIndexOutOfBoundsException e){
+                    previousSession.getItems().add("No previous sessions");
+                }
+            }
+        }
+    }
+    void addStudentToupcomingList(){
+        privateListView.getItems().clear();
+        for(int i = 0; i < Storage.studentData.size(); i++){
+            if(Storage.studentData.get(i)[0].equals(StudentsTableView.getSelectionModel().getSelectedItem())){
+                try{
+                    String[] PS = Storage.studentData.get(i)[8].split("NS");
+                    privateListView.getItems().clear();
+                    for(int j = 0; j < PS.length; j++){
+                        if(PS[j]!=""){
+                            privateListView.getItems().add(PS[j]);
+                        } else{
+                            privateListView.getItems().add("No upcoming sessions");
+                        }
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
+                    privateListView.getItems().add("No upcoming sessions");
+                }
+            }
+        }
+        for(int i = 0; i < Storage.studentData.size(); i++){
+            if(Storage.studentData.get(i)[0].equals(StudentsTableView.getSelectionModel().getSelectedItem())){
+                try{
+                    String[] PS = Storage.studentData.get(i)[9].split("NS");
+                    groupListView.getItems().clear();
+                    for(int j = 0; j < PS.length; j++){
+                        if(PS[j]!=""){
+                            groupListView.getItems().add(PS[j]);
+                        } else{
+                            groupListView.getItems().add("No upcoming sessions");
+                        }
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
+                    groupListView.getItems().add("No upcoming sessions");
                 }
             }
         }
